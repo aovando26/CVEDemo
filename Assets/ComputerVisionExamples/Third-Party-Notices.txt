@@ -1,0 +1,51 @@
+This asset is governed by the Asset Store EULA; however, the following components are governed by the licenses indicated below:
+
+A. MiDaS - AI model for robust monocular depth estimation.
+
+MIT License
+Copyright (c) Intel ISL (Intel Intelligent Systems Lab)
+
+see https://github.com/isl-org/MiDaS/blob/master/LICENSE
+
+
+B. ZoeDepth - Metric depth estimation from a single image.
+
+MIT License
+Copyright (c) Intelligent Systems Lab Org.
+
+see https://github.com/isl-org/ZoeDepth/blob/main/LICENSE
+
+
+C. Depth Anything - Unleashing the Power of Large-Scale Unlabeled Data
+
+Apache License Version 2.0, January 2004
+Authors: Lihe Yang, Bingyi Kang, Zilong Huang, Xiaogang Xu, Jiashi Feng, Hengshuang Zhao
+CVPR 2024
+
+see https://github.com/LiheYoung/Depth-Anything/blob/main/LICENSE
+
+
+D. MediaPipe Pose Landmarker - AI models to detect landmarks of human bodies in an image or video.
+
+Apache License Version 2.0, January 2004
+Copyright (c) The MediaPipe Authors.
+
+see https://github.com/google/mediapipe/blob/master/LICENSE
+
+
+E. BlazePoseBarracuda - 2D/3D pose estimation neural network that runs the Mediapipe Pose (BlazePose) pipeline on Unity Barracuda.
+
+Apache License Version 2.0, January 2004
+Copyright (c) creativeIKEP
+
+https://github.com/creativeIKEP/BlazePoseBarracuda/blob/main/LICENSE.md
+
+
+F. Ultralytics YOLOv8 - Cutting-edge, state-of-the-art (SOTA) model that builds upon the success of previous YOLO versions and introduces new features and improvements to further boost performance and flexibility.
+
+AGPL-3.0 license - GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
+Copyright (c) ultralytics
+
+https://github.com/ultralytics/ultralytics/tree/main?tab=AGPL-3.0-1-ov-file#readme
+
+

@@ -1,0 +1,51 @@
+#pragma kernel DepthTexToBuf
+
+
+#include "UnityCG.cginc"
+
+
+Texture2D<float> _DepthTex;
+RWStructuredBuffer<float> _DepthBuf;
+
+uint _TexW;
+uint _TexH;
+
+int _Angle;
+int _FlipH;
+int _FlipV;
+
+
+[numthreads(8, 8, 1)]
+void DepthTexToBuf(uint3 id : SV_DispatchThreadID)
+{
+    float d = _DepthTex.Load(id);
+
+	uint dx = id.x;
+	uint dy = id.y;
+
+	uint dw = _TexW;
+	uint dh = _TexH;
+
+	switch(_Angle)
+	{
+		case 0:
+		case 180:
+			dx = _FlipH ? dw - id.x - 1 : id.x;
+			dy = _FlipV ? dh - id.y - 1 : id.y;
+			break;
+
+		case 90:
+		case 270:
+			dw = _TexH;
+			dh = _TexW;
+
+			dx = _FlipH ? dw - id.y - 1 : id.y;
+			dy = _FlipV ? dh - id.x - 1 : id.x;
+			break;
+    }
+
+	uint di = dx + dy * dw;
+
+	_DepthBuf[di] = d;
+}
+

@@ -1,0 +1,173 @@
+#pragma kernel TexToNchwTensor05  // 0
+#pragma kernel TexToNchwTensor10  // 1
+#pragma kernel TexToNhwcTensor10  // 2
+
+#pragma kernel TexToLboxImage     // 3
+#pragma kernel TexToCropImage     // 4
+#pragma kernel ResizeTexToImage   // 5
+
+
+#include "UnityCG.cginc"
+
+
+uint _imageWidth;
+uint _imageHeight;
+sampler2D _inputTexture;
+RWStructuredBuffer<float> _tensorBuffer;
+
+
+// Texture to NCWH tensor (rgb in range -1/1)
+[numthreads(8, 8, 1)]
+void TexToNchwTensor05(uint3 id : SV_DispatchThreadID)
+{
+    float2 uv = float2((0.5 + id.x) / _imageWidth, (_imageHeight - 0.5 - id.y) / _imageHeight);
+
+    float2 duv_dx = float2(1.0 / _imageWidth, 0);
+    float2 duv_dy = float2(0, -1.0 / _imageHeight);
+
+    float3 rgb = tex2Dgrad(_inputTexture, uv, duv_dx, duv_dy).rgb * 2 - 1;
+
+    uint block = _imageWidth * _imageHeight;
+    uint offs = id.y * _imageWidth + id.x;
+
+    _tensorBuffer[offs] = rgb.r;
+    _tensorBuffer[block + offs] = rgb.g;
+    _tensorBuffer[block * 2 + offs] = rgb.b;
+}
+
+// Texture to NCWH tensor (rgb in range 0/1)
+[numthreads(8, 8, 1)]
+void TexToNchwTensor10(uint3 id : SV_DispatchThreadID)
+{
+    float2 uv = float2((0.5 + id.x) / _imageWidth, (_imageHeight - 0.5 - id.y) / _imageHeight);
+
+    float2 duv_dx = float2(1.0 / _imageWidth, 0);
+    float2 duv_dy = float2(0, -1.0 / _imageHeight);
+
+    float3 rgb = tex2Dgrad(_inputTexture, uv, duv_dx, duv_dy).rgb;
+
+    uint block = _imageWidth * _imageHeight;
+    uint offs = id.y * _imageWidth + id.x;
+
+    _tensorBuffer[offs] = rgb.r;
+    _tensorBuffer[block + offs] = rgb.g;
+    _tensorBuffer[block * 2 + offs] = rgb.b;
+}
+
+// Texture to NHWC tensor (rgb in range 0/1)
+[numthreads(8, 8, 1)]
+void TexToNhwcTensor10(uint3 id : SV_DispatchThreadID)
+{
+    float2 uv = float2((0.5 + id.x) / _imageWidth, (_imageHeight - 0.5 - id.y) / _imageHeight);
+
+    float2 duv_dx = float2(1.0 / _imageWidth, 0);
+    float2 duv_dy = float2(0, -1.0 / _imageHeight);
+
+    float3 rgb = tex2Dgrad(_inputTexture, uv, duv_dx, duv_dy).rgb;
+
+    uint offs = (id.y * _imageWidth + id.x) * 3;
+
+    _tensorBuffer[offs] = rgb.r;
+    _tensorBuffer[offs + 1] = rgb.g;
+    _tensorBuffer[offs + 2] = rgb.b;
+}
+
+
+uint _isLinearColorSpace;
+uint _letterboxWidth;
+uint _letterboxHeight;
+float2 _lboxScale;
+            
+sampler2D _sourceTex;
+RWTexture2D<float4> _lboxTex;
+
+// Texture to letter-box image
+[numthreads(8, 8, 1)]
+void TexToLboxImage(uint2 id : SV_DispatchThreadID)
+{
+    if (id.x > _letterboxWidth || id.y > _letterboxHeight) 
+        return;
+
+    float2 uv = float2((id.x + 0.5) / _letterboxWidth, (id.y + 0.5) / _letterboxHeight);
+    uv = (uv - 0.5) * _lboxScale + 0.5;
+
+    float2 duv_dx = float2(1.0 / _letterboxWidth * _lboxScale.x, 0);
+    float2 duv_dy = float2(0, -1.0 / _letterboxHeight * _lboxScale.y);
+
+    float3 rgb = tex2Dgrad(_sourceTex, uv, duv_dx, duv_dy).rgb;
+    rgb *= all(uv > 0) && all (uv < 1);
+
+    if(_isLinearColorSpace) 
+    {
+		rgb = LinearToGammaSpace(rgb);
+    }
+
+    _lboxTex[id] = float4(rgb, 1);
+}
+
+
+#include "PoseStruct.cginc"
+
+uint _poseIndex;
+uint _cropTexWidth;
+uint _cropTexHeight;
+
+StructuredBuffer<PoseRegion> _cropRegion;
+RWTexture2D<float4> _cropTexture;
+
+
+// Texture to cropped image
+[numthreads(8, 8, 1)]
+void TexToCropImage(uint2 id : SV_DispatchThreadID)
+{
+    float4x4 cropMatrix = _cropRegion[_poseIndex].cropMatrix;
+
+    float2 bcenter = _cropRegion[_poseIndex].box.xy;
+    bcenter = (bcenter - 0.5) * _lboxScale + 0.5;
+    float2 bsize = _cropRegion[_poseIndex].size.xy * _lboxScale;
+    float4 bbox = float4(bcenter.x - bsize.x * 0.55, bcenter.y - bsize.y * 0.55, bcenter.x + bsize.x * 0.55, bcenter.y + bsize.y * 0.55);
+
+    float2 uv = float2((id.x + 0.5) / _cropTexWidth, (id.y + 0.5) / _cropTexHeight);
+    uv = mul(cropMatrix, float4(uv, 0, 1)).xy;
+    uv = (uv - 0.5) * _lboxScale + 0.5;
+
+    float2 duv_dx = mul(cropMatrix, float4(1.0 / _cropTexWidth, 0, 0, 0)).xy;
+    float2 duv_dy = mul(cropMatrix, float4(0, -1.0 / _cropTexHeight, 0, 0)).xy;
+
+    float3 rgb = tex2Dgrad(_sourceTex, uv, duv_dx, duv_dy).rgb;
+    rgb *= (uv.x > bbox.x && uv.y > bbox.y && uv.x < bbox.z && uv.y < bbox.w) && all(uv > 0) && all(uv < 1);
+
+    if(_isLinearColorSpace) 
+    {
+		rgb = LinearToGammaSpace(rgb);
+    }
+
+    _cropTexture[id] = float4(rgb, 1);
+}
+
+
+RWTexture2D<float4> _imageTex;
+
+// Resize texture to image
+[numthreads(8, 8, 1)]
+void ResizeTexToImage(uint2 id : SV_DispatchThreadID)
+{
+    if (id.x > _letterboxWidth || id.y > _letterboxHeight) 
+        return;
+
+    float2 uv = float2((id.x + 0.5) / _imageWidth, (id.y + 0.5) / _imageHeight);
+
+    float2 duv_dx = float2(1.0 / _imageWidth, 0);
+    float2 duv_dy = float2(0, -1.0 / _imageHeight);
+
+    float3 rgb = tex2Dgrad(_sourceTex, uv, duv_dx, duv_dy).rgb;
+
+    if(_isLinearColorSpace) 
+    {
+		rgb = LinearToGammaSpace(rgb);
+    }
+
+    _imageTex[id] = float4(rgb, 1);
+}
+
+

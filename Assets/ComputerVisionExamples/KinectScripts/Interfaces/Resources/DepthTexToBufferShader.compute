@@ -1,0 +1,123 @@
+#pragma kernel DepthTexToBuf
+#pragma kernel DepthBufFindMM
+#pragma kernel DepthBufToOut
+
+
+#include "UnityCG.cginc"
+
+
+sampler2D _DepthTex;
+RWStructuredBuffer<float> _DepthTensorBuf;
+
+RWStructuredBuffer<float> _DepthBufRaw;
+RWStructuredBuffer<float> _DepthBufMM;
+RWStructuredBuffer<uint> _DepthBufOut;
+
+RWStructuredBuffer<float> _LpfBufDX;
+RWStructuredBuffer<float> _LpfBufX;
+float3 _LpfParams;
+
+uint _DepthBufLen;
+
+uint _DepthTexWidth;
+uint _DepthTexHeight;
+uint _DepthImgWidth;
+uint _DepthImgHeight;
+
+uint _IsLinearColorSpace;
+//float3 _DepthAnyMean;
+//float3 _DepthAnyStd;
+
+
+[numthreads(8, 8, 1)]
+void DepthTexToBuf(uint3 id : SV_DispatchThreadID)
+{
+    float2 uv = float2((0.5 + id.x) / _DepthTexWidth, (_DepthTexHeight - 0.5 - id.y) / _DepthTexHeight);
+
+    float2 duv_dx = float2(1.0 / _DepthTexWidth, 0);
+    float2 duv_dy = float2(0, -1.0 / _DepthTexHeight);
+
+    float3 rgb = tex2Dgrad(_DepthTex, uv, duv_dx, duv_dy).rgb;
+
+    if(_IsLinearColorSpace) 
+    {
+		rgb = LinearToGammaSpace(rgb);
+    }
+
+    //// normalize
+    //rgb = (rgb - _DepthAnyMean) / _DepthAnyStd;
+
+    uint block = _DepthTexWidth * _DepthTexHeight;
+    uint offs = id.y * _DepthTexWidth + id.x;
+
+    _DepthTensorBuf[offs] = rgb.r;
+    _DepthTensorBuf[block + offs] = rgb.g;
+    _DepthTensorBuf[block * 2 + offs] = rgb.b;
+}
+
+[numthreads(1, 1, 1)]
+void DepthBufFindMM(uint3 id : SV_DispatchThreadID)
+{
+    float minValue = _DepthBufRaw[0];
+    float maxValue = _DepthBufRaw[0];
+
+    for (uint i = 1; i < _DepthBufLen; i++) 
+	{
+        float value = _DepthBufRaw[i];
+        minValue = min(minValue, value);
+        maxValue = max(maxValue, value);
+    }
+
+    _DepthBufMM[0] = minValue;
+    _DepthBufMM[1] = maxValue;
+}
+
+
+// 1-Euro low pass filter
+float getAlpha(float cutoff, float t_e)
+{
+    float r = 2 * 3.141592 * cutoff * t_e;
+    return r / (r + 1);
+}
+
+float lpfStepDX(float x, float p_x, float p_dx, float3 params)
+{
+    float dx = (x - p_x) / _LpfParams.z;
+    return lerp(p_dx, dx, getAlpha(1, _LpfParams.z));
+}
+
+float lpfStepX(float x, float p_x, float dx, float3 params)
+{
+    float cutoff = _LpfParams.x + _LpfParams.y * length(dx);
+    return lerp(p_x, x, getAlpha(cutoff, _LpfParams.z));
+}
+
+
+[numthreads(16, 1, 1)]
+void DepthBufToOut(uint3 id : SV_DispatchThreadID)
+{
+	//if ((id.x & 1) == 0)
+	{
+		uint ix = (id.x << 1) % _DepthImgWidth;
+		uint iy = (id.x << 1) / _DepthImgWidth;
+
+		uint tx1 = (uint)(ix * _DepthTexWidth / _DepthImgWidth);
+		uint tx2 = (uint)((ix + 1) * _DepthTexWidth / _DepthImgWidth);
+		uint ty = (uint)(iy * _DepthTexHeight / _DepthImgHeight);
+
+		uint ind1 = tx1 + ty * _DepthTexWidth;
+		uint ind2 = tx2 + ty * _DepthTexWidth;
+
+		// d1
+        //float minDepth = _DepthBufMM[0];
+		float d1 = _DepthBufRaw[ind1];  // - minDepth;  // + 0.01;
+
+		// d2
+		float d2 = _DepthBufRaw[ind2];  // - minDepth;  // + 0.01;
+
+		uint d1i = (uint)(d1 * 1000);
+		uint d2i = (uint)(d2 * 1000);
+
+		_DepthBufOut[id.x] = (d1i | (d2i << 16));
+	}
+}

@@ -1,0 +1,703 @@
+#pragma kernel ProcessDetections        // 0
+#pragma kernel DetectProcessBoxes16     // 1
+#pragma kernel DetectProcessBoxes32     // 2
+#pragma kernel DetectBatchedNMS         // 3
+#pragma kernel DetectUpdatePoseRegion   // 4
+
+#pragma kernel LmProcessLandmarks       // 5
+#pragma kernel LmMapToSourceImage       // 6
+#pragma kernel ClearBodyIndexBuffer     // 7
+#pragma kernel SegmTexToBodyIndexBuffer // 8
+#pragma kernel SetBodyLmRectangle       // 9
+
+#pragma kernel ProcessDetectedPoses     // 10
+
+
+//#include "UnityCG.cginc"
+#include "Filters.cginc"
+#include "PoseStruct.cginc"
+
+// detection input image size
+#define DET_IMAGE_SIZE 640
+
+// detection input image size
+//#define DET_IMAGE_SIZE 224
+// landmark input image size
+#define LM_IMAGE_SIZE 256
+
+// max allowed detections and number of detected bodies
+#define MAX_DETECTIONS 100
+#define MAX_BODIES 3
+//#define BODY_SIZE_SCALE 2.1
+
+// math.pi & lm tilt (5 deg back)
+#define PI 3.14159265359
+#define LM_TILT 5 * PI / 180
+
+
+float Sigmoid(float x)
+{
+    return 1.0 / (1.0 + exp(-x));
+}
+
+
+float _scoreThreshold;
+RWStructuredBuffer<PoseDetection> _detInput;
+AppendStructuredBuffer<PoseDetection> _detOutput;
+
+[numthreads(50, 1, 1)]
+void ProcessDetections(uint3 id : SV_DispatchThreadID)
+{
+    const float scale = 1.0 / DET_IMAGE_SIZE;
+    PoseDetection pd = _detInput[id.x];
+
+    if (pd.score >= _scoreThreshold)
+    {
+        pd.center *= scale;
+        pd.size *= scale;
+
+        [unroll]
+		for(uint kp = 0; kp < KP_COUNT; kp++)
+		{
+            pd.keypoints[kp] *= scale;
+        }
+
+		_detOutput.Append(pd);
+    }
+}
+
+[numthreads(14, 14, 1)]
+void DetectProcessBoxes16(uint3 id : SV_DispatchThreadID)
+{
+}
+
+[numthreads(7, 7, 1)]
+void DetectProcessBoxes32(uint3 id : SV_DispatchThreadID)
+{
+}
+
+
+float _iouThreshold;
+ConsumeStructuredBuffer<PoseDetection> _nmsInputBuf;
+ByteAddressBuffer _nmsCountBuf;
+AppendStructuredBuffer<PoseDetection> _nmsOutputBuf;
+groupshared PoseDetection _nmsPoseArray[MAX_DETECTIONS];
+groupshared bool _nmsKeepArray[MAX_DETECTIONS];
+
+//RWStructuredBuffer<PoseDetection> _nmsPoseBuffer;
+//RWStructuredBuffer<bool> _nmsKeepBuffer;
+//RWStructuredBuffer<float> _nmsIouBuffer;
+//RWStructuredBuffer<bool> _nmsScoreBuffer;
+
+// caluculate IOU between boxes.
+float CalcIOU(in PoseDetection pd1, in PoseDetection pd2)
+{
+    float pd1Area = pd1.size.x * pd1.size.y;
+    float pd2Area = pd2.size.x * pd2.size.y;
+
+    float2 p0 = max(pd1.center - pd1.size * 0.5, pd2.center - pd2.size * 0.5);
+    float2 p1 = min(pd1.center + pd1.size * 0.5, pd2.center + pd2.size * 0.5);
+    float innerArea = max(0, p1.x - p0.x) * max(0, p1.y - p0.y);
+
+    return innerArea / (pd1Area + pd2Area - innerArea);
+}
+
+// calculate batched NMS
+[numthreads(1, 1, 1)]
+void DetectBatchedNMS(uint3 id : SV_DispatchThreadID)
+{
+    int inputCount = _nmsCountBuf.Load(0);
+    inputCount = min(inputCount, MAX_DETECTIONS);
+
+    for(int i1 = 0; i1 < inputCount; i1++)
+	{
+        _nmsPoseArray[i1] = _nmsInputBuf.Consume();
+        //_nmsPoseBuffer[i] = _nmsPoseArray[i];
+    }
+
+    for(int i2 = 0; i2 < inputCount; i2++)
+    {
+        bool isKeep = true;
+
+        [unroll]
+        for (int j = 0; j < i2; j++)
+        {
+            if(_nmsKeepArray[j])
+            {
+                float iou = CalcIOU(_nmsPoseArray[i2], _nmsPoseArray[j]);
+
+                //_nmsIouBuffer[i2 * inputCount + j] = iou;
+                //_nmsScoreBuffer[i2 * inputCount + j] = _nmsPoseArray[i2].score > _nmsPoseArray[j].score;
+
+                if(iou >= _iouThreshold)
+                {
+                    if(_nmsPoseArray[i2].score > _nmsPoseArray[j].score)
+                    {
+                        _nmsKeepArray[j] = false;
+                        //_nmsKeepBuffer[j] = false;
+                    }
+                    else
+                    {
+                        isKeep = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        _nmsKeepArray[i2] = isKeep;
+        //_nmsKeepBuffer[i2] = isKeep;
+    }
+
+    int outputCount = 0;
+    for (int i3 = 0; (i3 < inputCount) && (outputCount < MAX_BODIES); i3++)
+    {
+        if(_nmsKeepArray[i3])
+        {
+            PoseDetection pd1 = _nmsPoseArray[i3];
+            float pd1Max = max(pd1.size.x, pd1.size.y);
+            float pd1Val = (pd1Max - abs(pd1.center.x - 0.5)) + (pd1Max - abs(pd1.center.y - 0.5)) + pd1.size.x + pd1.size.y;
+
+            for(int j3 = i3 + 1; j3 < inputCount; j3++)
+            {
+                if(_nmsKeepArray[j3])
+                {
+                    PoseDetection pd2 = _nmsPoseArray[j3];
+                    float pd2Max = max(pd2.size.x, pd2.size.y);
+                    float pd2Val = (pd2Max - abs(pd2.center.x - 0.5)) + (pd2Max - abs(pd2.center.y - 0.5)) + pd2.size.x + pd2.size.y;
+
+                    if(pd2Val > pd1Val)
+                    {
+                        _nmsPoseArray[j3] = pd1;
+                        _nmsPoseArray[i3] = pd2;
+
+                        pd1 = pd2;
+                        pd1Val = pd2Val;
+                    }
+                }
+            }
+
+            _nmsOutputBuf.Append(pd1);
+            outputCount++;
+        }
+    }
+}
+
+
+StructuredBuffer<PoseDetection> _detections;
+RWStructuredBuffer<PoseDetection> _saveDet;
+float2 _lboxScale;
+uint _poseCount;
+
+
+[numthreads(1, 1, 1)]
+void ProcessDetectedPoses(uint3 id : SV_DispatchThreadID)
+{
+}
+
+
+//float2 _lboxScale;
+//float2 _lboxPad;
+//float _lpfDeltaTime;
+
+//uint _currentRegCount;
+//float _currentRegTimestamp;
+//float _minRegScore;
+
+StructuredBuffer<PoseDetection> _poseDetections;
+ByteAddressBuffer _poseDetCountBuf;
+
+RWStructuredBuffer<PoseRegion> _savedRegions;
+//RWStructuredBuffer<uint> _regionCount;
+
+
+float4x4 makeTranslationMatrix(float2 v)
+{
+    return float4x4(1, 0, 0, v.x,
+                    0, 1, 0, v.y,
+                    0, 0, 1,   0,
+                    0, 0, 0,   1);
+}
+
+float4x4 makeRotationMatrixZ(float x)
+{
+    return float4x4(cos(x), -sin(x), 0, 0,
+                    sin(x),  cos(x), 0, 0,
+                         0,       0, 1, 0,
+                         0,       0, 0, 1);
+}
+
+float4x4 makeScalingMatrix(float x)
+{
+    return float4x4(x, 0, 0, 0,
+                    0, x, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1);
+}
+
+float4x4 makeIdentityMatrix()
+{
+    return float4x4(1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1);
+}
+
+// sets the region matrices as needed
+PoseRegion SetRegionMatrices(PoseRegion pr)
+{
+    // crop matrix
+    float2 cropT = pr.box.xy - pr.box.z * 0.5;
+    float4x4 m1 = makeTranslationMatrix(cropT);
+    float4x4 m2 = makeScalingMatrix(pr.box.z);
+    float4x4 m3 = makeTranslationMatrix(0.5);
+    float4x4 m4 = makeRotationMatrixZ(pr.box.w);
+    float4x4 m5 = makeTranslationMatrix(-0.5);
+    pr.cropMatrix = mul(mul(mul(mul(m1, m2), m3), m4), m5);
+
+	// inv. matrix
+	float4x4 mi1 = makeTranslationMatrix(-cropT / pr.box.z);
+	float4x4 mi2 = makeScalingMatrix(1 / pr.box.z);
+	float4x4 mi3 = makeTranslationMatrix(0.5);
+	float4x4 mi4 = makeRotationMatrixZ(-pr.box.w);
+	float4x4 mi5 = makeTranslationMatrix(-0.5);
+	pr.invMatrix = mul(mul(mul(mul(mi3, mi4), mi5), mi1), mi2);
+
+    return pr;
+}
+
+[numthreads(1, 1, 1)]
+void DetectUpdatePoseRegion(uint id : SV_DispatchThreadID)
+{
+    uint count = _poseDetCountBuf.Load(0);
+
+    for(uint i = 0; i < count; i++)
+    {
+        // pose detection result
+        const PoseDetection pd = _poseDetections[i];
+
+        float2 hip = (float2)(pd.keypoints[11] + pd.keypoints[12]) * 0.5;
+        float2 neck = (float2)(pd.keypoints[5] + pd.keypoints[6]) * 0.5;
+
+        // center point
+        float2 center = pd.center;  // hip;  // (hip - _lboxPad) * _lboxScale;
+        //float2 roi = pd.keyPoints[1];  // (pd.keyPoints[1] - _lboxPad) * _lboxScale;
+
+        // image crop size
+        //float sizeXY = length(roi - center);
+        float sizeXY = max(pd.size.x, pd.size.y);
+        float size11 = sizeXY * 1.1;
+
+        // pose angle
+        float target = PI * 0.5;
+        const float2 up = neck - hip;
+        float angle = atan2(-up.y, up.x) - target;
+
+        center.y = 1.0 - center.y;
+        //int r = GetClosestRegionIndex(center, pd.score, sizeXY, angle, i, count);
+
+        int r = i;
+        //if (r >= 0)
+        {
+            PoseRegion pr = _savedRegions[r];
+
+            //pr.size.xy = float2(sizeXY, length(up));  // float2(sizeXY * 1.5, length(up) * 2.0);
+            //pr.size.w = max(pr.size.z, pr.size.x);  // lmHipShDist, detHipRoi
+            //pr.size.w = max(pr.size.w, pr.size.y);  // detHipSh
+
+            //float minWH = min(1 / _lboxScale.x, 1 / _lboxScale.y);
+            pr.size = float4(pd.size, sizeXY, size11);  // max(minWH, size11));
+
+            //float dTime = (_currentRegTimestamp - pr.par.x) * 0.001;
+            //float sizeBox = pr.size.w * BODY_SIZE_SCALE;  // max(sizeX, sizeY) * BODY_SIZE_SCALE;  //
+
+            //sizeBox = lerp(pr.box.z, sizeBox, dTime);
+            ////angle = lerp(pr.box.w, angle, dTime);
+
+            hip = (hip - 0.5) * _lboxScale + 0.5;
+            neck = (neck - 0.5) * _lboxScale + 0.5;
+
+            pr.box = float4(center.xy, pr.size.w, angle);  // abs(angle) > 1.0472 ? angle :*/ 0);  // 1.0472 = 60 deg
+            pr.par = float4(hip.x, 1 - hip.y, neck.x, 1 - neck.y);
+            //pr.par = float4(center.x - pr.size.x * 0.5, center.y - pr.size.y * 0.5, center.x + pr.size.x * 0.5, center.y + pr.size.y * 0.5);
+            //pr.par.x = _currentRegTimestamp;
+
+            [unroll]
+		    for(uint kp = 0; kp < KP_COUNT; kp++)
+		    {
+                float3 pdkp = pd.keypoints[kp];
+                pr.keypoints[kp] = float3((pdkp.x - 0.5) * _lboxScale.x + 0.5, 1 - ((pdkp.y - 0.5) * _lboxScale.y + 0.5), pdkp.z);
+            }
+
+            _savedRegions[r] = SetRegionMatrices(pr);
+            if(r >= MAX_BODIES)
+                break;
+        }
+    }
+
+    //_regionCount[0] = count;
+
+    //// copy regions to saved regions
+    //for(uint sr = 0; sr < count; sr++)  // [unroll] MAX_BODIES
+    //{
+    //    _savedRegions[sr] = _poseRegions[sr];
+    //}
+}
+
+
+uint _landmarkCount;
+StructuredBuffer<float> _poseFlag;
+StructuredBuffer<float> _landmarkInput;
+StructuredBuffer<float> _landmarkWorldInput;
+RWStructuredBuffer<float4> _landmarkOutput;
+RWStructuredBuffer<float4> _landmarkWorldOutput;
+RWStructuredBuffer<float4> _landmarkSensorOutput;
+
+int _segmInputWidth;
+int _segmInputHeight;
+StructuredBuffer<float> _segmInputBuffer;
+
+//StructuredBuffer<float> _Heatmap;
+//uint _HmWidth;
+//uint _HmHeight;
+
+//uint _KernelSize;
+//float _MinConfidence;
+
+StructuredBuffer<uint> _depthMapBuf;
+StructuredBuffer<PoseRegion> _poseRegions;
+uint _poseIndex;
+
+float2 _intrPpt;
+float2 _intrFlen;
+uint _depthMapWidth;
+uint _depthMapHeight;
+
+
+float4x4 makeRotationMatrixX(float x)
+{
+    return float4x4(1,       0,       0, 0,
+                    0,  cos(x), -sin(x), 0,
+                    0,  sin(x),  cos(x), 0,
+                    0,       0,       0, 1);
+}
+
+// get segm map value for the 2d lm position
+float GetSegmValue(float2 lmPos)
+{
+    int ix = (int)(lmPos.x * _segmInputWidth);
+    int iy = (int)((1.0 - lmPos.y) * _segmInputHeight);
+    int ind = ix + iy * _segmInputWidth;
+
+    if(ix < 0 || ix >= _segmInputWidth || iy < 0 || iy >= _segmInputHeight)
+        return -1.0;
+    else
+        return _segmInputBuffer[ind];
+}
+
+[numthreads(39 + 1, 1, 1)]
+void LmProcessLandmarks(uint id : SV_DispatchThreadID)
+{   
+    if(id > _landmarkCount) 
+		return;
+
+    PoseRegion region = _poseRegions[_poseIndex];
+
+    if(id == _landmarkCount)
+	{
+        float poseConfidence = _poseFlag[0];
+
+        //_landmarkOutput[id] = float4(poseConfidence, 0, 0, 0);
+        float2 boxPos = (region.box.xy - 0.5) * _lboxScale + 0.5;
+        float2 boxSize = region.size.xy * _lboxScale;
+        _landmarkOutput[id] = float4(boxPos, boxSize);
+
+        _landmarkWorldOutput[id] = float4(poseConfidence, 0, 0, 0);
+        _landmarkSensorOutput[id] = float4(poseConfidence, 0, 0, 0);
+    }
+    else
+	{
+        float x = _landmarkInput[id * 5] / LM_IMAGE_SIZE;
+        float y = _landmarkInput[id * 5 + 1] / LM_IMAGE_SIZE;
+        //float z = _landmarkInput[id * 5 + 2] / LM_IMAGE_SIZE;
+
+        float visibility = _landmarkInput[id * 5 + 3];
+        float presence = _landmarkInput[id * 5 + 4];
+
+        float scoreV = Sigmoid(visibility);
+        float scoreP = Sigmoid(presence);
+        float score = id <= 32 ? min(scoreV, scoreP) : scoreP;
+
+        //// refine lm from heatmap
+        //if(_HmWidth > 0 && _HmHeight > 0 && _KernelSize > 0 && 
+        //    x >= 0.0 && x < 1.0 && y >= 0.0 && y < 1.0)
+        //{
+        //    uint offset = (_KernelSize - 1) / 2;
+        //    uint centerCol = (uint)(x * _HmWidth);
+        //    uint centerRow = (uint)(y * _HmHeight);
+
+        //    uint beginCol = max(0, centerCol - offset);
+        //    uint endCol = min(_HmWidth, centerCol + offset + 1);
+        //    uint beginRow = max(0, centerRow - offset);
+        //    uint endRow = min(_HmHeight, centerRow + offset + 1);
+
+        //    float totalSum = 0.0;
+        //    float weightedCol = 0.0;
+        //    float weightedRow = 0.0;
+
+        //    float maxConfidence = 0.0;
+        //    for(uint row = beginRow; row < endRow; row++)
+        //        for(uint col = beginCol; col < endCol; col++)
+        //        {
+        //            int index = (row * _HmWidth + col) * id.x;
+        //            float confidence = Sigmoid(_Heatmap[index]);
+
+        //            totalSum += confidence;
+        //            weightedCol += col * confidence;
+        //            weightedRow += row * confidence;
+
+        //            maxConfidence = max(maxConfidence, confidence);
+        //        }
+
+        //    if(maxConfidence >= _MinConfidence && totalSum > 0)
+        //    {
+        //        x = weightedCol / _HmWidth / totalSum;
+        //        y = weightedRow / _HmHeight / totalSum;
+        //    }
+        //}
+
+        float3 pos = float3(x, 1.0 - y, 0);
+        float segm = GetSegmValue(pos.xy);
+
+        pos = mul(region.cropMatrix, float4(pos, 1)).xyz;
+        pos.xy = (pos.xy - 0.5) * _lboxScale + 0.5;
+        _landmarkOutput[id] = float4(pos.xy, segm, score);
+
+        float2 lmUv = float2(pos.x, 1.0 - pos.y);
+		uint dx = (uint)(lmUv.x * _depthMapWidth);
+		uint dy = (uint)(lmUv.y * _depthMapHeight);
+
+        pos = float3(_landmarkWorldInput[id * 3], -_landmarkWorldInput[id * 3 + 1], _landmarkWorldInput[id * 3 + 2]);
+
+        float4x4 rotationMat = mul(makeRotationMatrixZ(region.box.w), makeRotationMatrixX(LM_TILT));
+        pos = mul(rotationMat, float4(pos, 1)).xyz;
+        _landmarkWorldOutput[id] = float4(pos, score);
+
+        float4 lmPos = float4(0, 0, 0, score);
+        if(_intrFlen.x != 0 && _intrFlen.y != 0)
+        {
+            float x = (dx - _intrPpt.x) / _intrFlen.x;  // * pos.z;
+            float y = (dy - _intrPpt.y) / _intrFlen.y;  // * pos.z;
+            lmPos = float4(x, y, 1, score);  // pos.z, score);
+        }
+
+        _landmarkSensorOutput[id] = lmPos;
+
+        if(id == 33)
+        {
+		    uint di = clamp(dx, 0, _depthMapWidth - 1) + clamp(dy, 0, _depthMapHeight - 1) * _depthMapWidth;
+				
+		    uint depth2 = _depthMapBuf[di >> 1];
+		    uint depthMm = (dx & 1) != 0 ? depth2 >> 16 : depth2 & 0xffff;
+            float depth = depthMm * 0.001;
+
+            float4 hipPos = float4(0, 0, 0, score);
+            if(_intrFlen.x != 0 && _intrFlen.y != 0)
+            {
+                float x = (dx - _intrPpt.x) / _intrFlen.x * depth;
+                float y = (dy - _intrPpt.y) / _intrFlen.y * depth;
+                hipPos = float4(x, -y, depth, score);
+            }
+
+            _landmarkWorldOutput[id] = hipPos;
+        }
+    }
+}
+
+
+// map pose landmark to the source image
+[numthreads(39 + 1, 1, 1)]
+void LmMapToSourceImage(uint id : SV_DispatchThreadID)
+{
+}
+
+
+RWStructuredBuffer<uint> _biBuffer;
+
+
+[numthreads(64, 1, 1)]
+void ClearBodyIndexBuffer(uint3 id : SV_DispatchThreadID)
+{
+	_biBuffer[id.x] = 0xffffffff;
+}
+
+
+StructuredBuffer<float4> _LandmarkWorldBuf;
+StructuredBuffer<float> _SegmBuf;
+RWStructuredBuffer<uint> _BodyIndexBuf;
+
+float2 _InvScale;
+float _DepthScaleX;
+int _SegmTexWidth;
+int _SegmTexHeight;
+int _BodyIndexImgWidth;
+int _BodyIndexImgHeight;
+
+uint _lmCount;
+//StructuredBuffer<float4> _lmBuffer;
+//float _lmScore;
+float _lmThreshold;
+
+
+// get the body-index value of the given coordinates
+uint GetBodyIndexOf(uint idX, uint idY, uint biShift, uint biMask)
+{
+	float u = (float)(_DepthScaleX >= 0.0 ? idX : _BodyIndexImgWidth - idX - 1) / _BodyIndexImgWidth;
+	float v = (float)(_BodyIndexImgHeight - idY - 1) / _BodyIndexImgHeight;
+
+	float2 imgUv = float2(u, v);
+	PoseRegion region = _poseRegions[_poseIndex];
+
+	float2 texUv = (imgUv - 0.5) * _InvScale + 0.5;
+	texUv = mul(region.invMatrix, float4(texUv, 0, 1)).xy;
+	int2 texXy = int2(texUv.x * _SegmTexWidth, (1 - texUv.y) * _SegmTexHeight);
+
+	uint bi = 0xffffffff;
+    if(texXy.x >= 0 && texXy.x < _SegmTexWidth && texXy.y >= 0 && texXy.y < _SegmTexHeight)
+    {
+        int segmIdx = texXy.x + texXy.y * _SegmTexWidth;
+
+	    if (_SegmBuf[segmIdx] > 0)
+	    {
+            bi = (_poseIndex << biShift) | biMask;
+
+		    //switch (idX & 3)
+		    //{
+			//    case 0:
+			//	    bi = 0xffffff00 | _poseIndex;
+			//	    break;
+			//    case 1:
+			//	    bi = 0xffff00ff | (_poseIndex << 8);
+			//	    break;
+			//    case 2:
+			//	    bi = 0xff00ffff | (_poseIndex << 16);
+			//	    break;
+			//    case 3:
+			//	    bi = 0x00ffffff | (_poseIndex << 24);
+			//	    break;
+		    //}
+	    }
+    }
+
+	return bi;
+}
+
+// get the body-index value of the given landmark coordinates
+uint GetBodyIndexOfLandmark(uint2 id, float4 lmPos, uint bodyIndex, int halfSize, uint biShift, uint biMask)
+{
+	int lmX = (int)round((_DepthScaleX >= 0.0 ? lmPos.x : 1.0 - lmPos.x) * _BodyIndexImgWidth);
+	int lmY = (int)round(lmPos.y * _BodyIndexImgHeight);
+
+    uint bi = 0xffffffff;
+    int2 iid = (int2)id;
+
+	if (iid.x >= (lmX - halfSize) && iid.x <= (lmX + halfSize) && iid.y >= (lmY - halfSize) && iid.y <= (lmY + halfSize))
+	{
+        bi = (bodyIndex << biShift) | biMask;
+
+		//switch (id.x & 3)
+		//{
+		//	case 0:
+		//		bi = 0xffffff00 | bodyIndex;
+		//		break;
+		//	case 1:
+		//		bi = 0xffff00ff | (bodyIndex << 8);
+		//		break;
+		//	case 2:
+		//		bi = 0xff00ffff | (bodyIndex << 16);
+		//		break;
+		//	case 3:
+		//		bi = 0x00ffffff | (bodyIndex << 24);
+		//		break;
+		//}
+	}
+
+	return bi;
+}
+
+// get the body index of the given coordinates or lm coordinates
+uint GetBodyIndexAll(uint2 id, uint biShift, uint biMask)
+{
+    // position
+    uint bi = GetBodyIndexOf(id.x, id.y, biShift, biMask);
+
+    // landmarks
+    for(uint i1 = 0; i1 < 33; i1++)  // _lmCount
+    {
+        float4 lm = _landmarkOutput[i1];
+        lm.y = 1 - lm.y;
+
+        uint bi2 = GetBodyIndexOfLandmark(id, lm, 5, i1 == 23 || i1 == 24 || i1 == 11 || i1 == 12 ? 4 : 2, biShift, biMask);
+        bi = bi2 != 0xffffffff ? bi2 : bi;
+    }
+
+    // special landmarks
+    for(uint i2 = 33; i2 < _lmCount; i2++)  // 
+    {
+        float4 lm = _landmarkOutput[i2];
+        lm.y = 1 - lm.y;
+
+        uint bi2 = GetBodyIndexOfLandmark(id, lm, 4, 2, biShift, biMask);
+        bi = bi2 != 0xffffffff ? bi2 : bi;
+    }
+
+    //// center
+    //const PoseDetection pd = _poseDetections[0];
+    //float4 lmCenter = float4(pd.keyPoints[0], 0, 0);
+    
+    //uint bi3 = GetBodyIndexOfLandmark(id, lmCenter, 6, 4, biShift, biMask);
+    //bi = bi3 != 0xffffffff ? bi3 : bi;
+
+    //// shoulder
+    //float4 lmShoulder = float4(pd.keyPoints[2], 0, 0);
+    
+    //uint bi4 = GetBodyIndexOfLandmark(id, lmShoulder, 7, 4, biShift, biMask);
+    //bi = bi4 != 0xffffffff ? bi4 : bi;
+
+    return bi;
+}
+
+[numthreads(8, 8, 1)]
+void SegmTexToBodyIndexBuffer(uint3 id : SV_DispatchThreadID)
+{
+    float lmScore = _LandmarkWorldBuf[_lmCount].x;
+	if ((id.x & 3) == 0 && lmScore >= _lmThreshold)
+	{
+		uint bi0 = GetBodyIndexOf(id.x, id.y, 0, 0xffffff00);  // GetBodyIndexAll
+		uint bi1 = GetBodyIndexOf(id.x + 1, id.y, 8, 0xffff00ff);  // GetBodyIndexAll
+		uint bi2 = GetBodyIndexOf(id.x + 2, id.y, 16, 0xff00ffff);  // GetBodyIndexAll
+		uint bi3 = GetBodyIndexOf(id.x + 3, id.y, 24, 0x00ffffff);  // GetBodyIndexAll
+
+        uint biPrev = _BodyIndexBuf[(id.x + id.y * _BodyIndexImgWidth) >> 2];
+        uint bi0p = (biPrev & 0xff) | 0xffffff00;
+        uint bi1p = (biPrev & 0xff00) | 0xffff00ff;
+        uint bi2p = (biPrev & 0xff0000) | 0xff00ffff;
+        uint bi3p = (biPrev & 0xff000000) | 0x00ffffff;
+
+        bi0 = bi0p != 0xffffffff ? bi0p : bi0;
+        bi1 = bi1p != 0xffffffff ? bi1p : bi1;
+        bi2 = bi2p != 0xffffffff ? bi2p : bi2;
+        bi3 = bi3p != 0xffffffff ? bi3p : bi3;
+
+		_BodyIndexBuf[(id.x + id.y * _BodyIndexImgWidth) >> 2] = bi0 & bi1 & bi2 & bi3;
+	}
+}
+
+
+int _lmOutputCount;
+float _lmJointThreshold;
+
+[numthreads(1, 1, 1)]
+void SetBodyLmRectangle(uint3 id : SV_DispatchThreadID)
+{
+}

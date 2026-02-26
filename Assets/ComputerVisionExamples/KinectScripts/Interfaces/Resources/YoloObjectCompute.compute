@@ -1,0 +1,291 @@
+#pragma kernel ProcessDetections       // 0
+#pragma kernel DetectBatchedNMS        // 1
+#pragma kernel ProcessMasks            // 2
+#pragma kernel ClearObjIndexBuffer     // 3
+#pragma kernel MasksToObjIndexBuffer   // 4
+
+
+// detection input image size in pixels
+#define DET_IMAGE_SIZE 640
+// detection size in bytes
+#define DETECTION_SIZE 116 
+// number of detected classes
+#define NUM_CLASSES 80
+// size of the class mask
+#define MASK_SIZE 32
+// max allowed detections
+#define MAX_DETECTIONS 100
+
+// object detection structure
+struct ObjectDetection
+{
+    float2 center;
+    float2 size;
+    int objType;
+    float score;
+
+    float mask[MASK_SIZE];
+};
+
+
+RWStructuredBuffer<ObjectDetection> _objdet;
+RWStructuredBuffer<uint> _objCountBuf;
+RWStructuredBuffer<uint> _objIndexBuf;
+RWStructuredBuffer<float> _masksBuf;
+
+float2 _invScale;
+float _depthScaleX;
+int _maskImgWidth;
+int _maskImgHeight;
+int _maskObjCount;
+int _objIndexImgWidth;
+int _objIndexImgHeight;
+
+
+//[numthreads(1, 1, 1)]
+//void ProcessDetectedObjects(uint3 id : SV_DispatchThreadID)
+//{
+//    ObjectDetection od = _objdet[id.x];
+//    const float scale = 1.0 / DET_IMAGE_SIZE;
+
+//    od.center = (od.center * scale - 0.5) * _lboxScale + 0.5;
+//    od.size = od.size * scale * _lboxScale;
+
+//	_objdet[id.x] = od;
+//}
+
+
+StructuredBuffer<float> _detInput;
+AppendStructuredBuffer<ObjectDetection> _detOutput;
+StructuredBuffer<int> _detDisabledTypeBuf;
+
+float _scoreThreshold;
+float2 _lboxScale;
+//float2 _inputScale;
+
+
+[numthreads(50, 1, 1)]
+void ProcessDetections(uint3 id : SV_DispatchThreadID)
+{
+    const float scale = 1.0 / DET_IMAGE_SIZE;
+    uint detOffset = id.x * DETECTION_SIZE;
+
+    float maxScore = 0.0;
+    int maxClass = -1;
+
+    for(uint c = 0; c < NUM_CLASSES; c++)
+    {
+        float score = _detInput[detOffset + 4 + c];
+
+        if(score > maxScore)
+        {
+            maxScore = score;
+            maxClass = c;
+        }
+    }
+
+    if (maxScore >= _scoreThreshold && maxClass >= 0 && _detDisabledTypeBuf[maxClass] == 0)
+    {
+        float2 cxy = float2(_detInput[detOffset], _detInput[detOffset + 1]);
+        float2 sxy = float2(_detInput[detOffset + 2], _detInput[detOffset + 3]);
+
+        ObjectDetection od;
+        od.center = (cxy * scale - 0.5) * _lboxScale + 0.5;
+        od.size = sxy * scale * _lboxScale;
+
+        od.objType = maxClass;
+        od.score = maxScore;
+
+        [unroll]
+		for(uint m = 0; m < MASK_SIZE; m++)
+		{
+            od.mask[m] = _detInput[detOffset + 4 + NUM_CLASSES + m];
+        }
+
+		_detOutput.Append(od);
+    }
+}
+
+
+
+ConsumeStructuredBuffer<ObjectDetection> _nmsInputBuf;
+ByteAddressBuffer _nmsCountBuf;
+
+groupshared ObjectDetection _nmsObjArray[MAX_DETECTIONS];
+groupshared bool _nmsKeepArray[MAX_DETECTIONS];
+
+float _iouThreshold;
+int _maxObjCount;
+
+
+// caluculate IOU between boxes.
+float CalcIOU(in ObjectDetection pd1, in ObjectDetection pd2)
+{
+    float pd1Area = pd1.size.x * pd1.size.y;
+    float pd2Area = pd2.size.x * pd2.size.y;
+
+    float2 p0 = max(pd1.center - pd1.size * 0.5, pd2.center - pd2.size * 0.5);
+    float2 p1 = min(pd1.center + pd1.size * 0.5, pd2.center + pd2.size * 0.5);
+    float innerArea = max(0, p1.x - p0.x) * max(0, p1.y - p0.y);
+
+    return innerArea / (pd1Area + pd2Area - innerArea);
+}
+
+// calculate batched NMS
+[numthreads(1, 1, 1)]
+void DetectBatchedNMS(uint3 id : SV_DispatchThreadID)
+{
+    int inputCount = _nmsCountBuf.Load(0);
+    inputCount = min(inputCount, MAX_DETECTIONS);
+
+    for(int d = 0; d < inputCount; d++)
+	{
+        _nmsObjArray[d] = _nmsInputBuf.Consume();
+    }
+
+    for(int i = 0; i < inputCount; i++)
+    {
+        bool isKeep = true;
+
+        [unroll]
+        for (int j = 0; j < i; j++)
+        {
+            if(_nmsKeepArray[j])
+            {
+                float iou = CalcIOU(_nmsObjArray[i], _nmsObjArray[j]);
+
+                if(iou >= _iouThreshold)
+                {
+                    if(_nmsObjArray[i].score > _nmsObjArray[j].score)
+                    {
+                        _nmsKeepArray[j] = false;
+                    }
+                    else
+                    {
+                        isKeep = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        _nmsKeepArray[i] = isKeep;
+    }
+
+    int oi = 0;
+    for (int o = 0; (o < inputCount) && (oi < _maxObjCount); o++)
+    {
+        if(_nmsKeepArray[o])
+        {
+            _objdet[oi] = _nmsObjArray[o];
+            oi++;
+        }
+    }
+
+    _objCountBuf[0] = oi;
+}
+
+
+StructuredBuffer<float> _maskInput;
+
+
+[numthreads(8, 8, 1)]
+void ProcessMasks(uint3 id : SV_DispatchThreadID)
+{
+    int objCount = _objCountBuf[0];
+
+    for(int o = 0; o < objCount; o++)
+    {
+        ObjectDetection od = _objdet[o];
+
+        int mofs = (id.y * _maskImgWidth + id.x) * MASK_SIZE;
+        float mdot = 0;
+
+        [unroll]
+        for(int m = 0; m < MASK_SIZE; m++)
+        {
+            mdot += od.mask[m] * _maskInput[mofs + m];
+        }
+
+        int oofs = o * _maskImgWidth * _maskImgHeight + (id.y * _maskImgWidth + id.x);
+        _masksBuf[oofs] = mdot;
+    }
+}
+
+
+[numthreads(64, 1, 1)]
+void ClearObjIndexBuffer(uint3 id : SV_DispatchThreadID)
+{
+	_objIndexBuf[id.x] = 0xffffffff;
+}
+
+
+// get the obj-index value of the given coordinates
+uint GetObjIndexOf(uint idX, uint idY, uint oiShift, uint oiMask)
+{
+	float u = (float)(_depthScaleX >= 0.0 ? idX : _objIndexImgWidth - idX - 1) / _objIndexImgWidth;
+	float v = (float)(_objIndexImgHeight - idY - 1) / _objIndexImgHeight;
+	float v1 = 1.0 - v;
+
+	float2 imgUv = float2(u, v);
+	imgUv = (imgUv - 0.5) * _invScale + 0.5;
+
+	int2 texXy = int2((imgUv.x * _maskImgWidth), ((1.0 - imgUv.y) * _maskImgHeight));
+
+	uint oi = 0xffffffff;
+    if(texXy.x >= 0 && texXy.x < _maskImgWidth && texXy.y >= 0 && texXy.y < _maskImgHeight)
+    {
+		float maxMask = 0.0;
+		uint maxOI = 0xff;
+
+        int objCount = _objCountBuf[0];
+		for(int o = 0; o < objCount; o++)
+		{
+            ObjectDetection obj = _objdet[o];
+            float4 objBox = float4(obj.center.x - obj.size.x * 0.55, obj.center.y - obj.size.y * 0.55,
+                obj.center.x + obj.size.x * 0.55, obj.center.y + obj.size.y * 0.55);
+
+			if(u >= objBox.x && u <= objBox.z && v1 >= objBox.y && v1 <= objBox.w)
+			{
+				int segmIdx = o * _maskImgWidth * _maskImgHeight + texXy.y * _maskImgWidth + texXy.x;
+				float mask = _masksBuf[segmIdx];
+
+				if (mask > maxMask)
+				{
+					maxMask = mask;
+					maxOI = (uint)o;
+				}
+            }
+        }
+
+		oi = (maxOI << oiShift) | oiMask;
+    }
+
+	return oi;
+}
+
+[numthreads(8, 8, 1)]
+void MasksToObjIndexBuffer(uint3 id : SV_DispatchThreadID)
+{
+	if ((id.x & 3) == 0)
+	{
+		uint oi0 = GetObjIndexOf(id.x, id.y, 0, 0xffffff00);
+		uint oi1 = GetObjIndexOf(id.x + 1, id.y, 8, 0xffff00ff);
+		uint oi2 = GetObjIndexOf(id.x + 2, id.y, 16, 0xff00ffff);
+		uint oi3 = GetObjIndexOf(id.x + 3, id.y, 24, 0x00ffffff);
+
+        //uint oiPrev = _objIndexBuf[(id.x + id.y * _objIndexImgWidth) >> 2];
+        //uint oi0p = (oiPrev & 0xff) | 0xffffff00;
+        //uint oi1p = (oiPrev & 0xff00) | 0xffff00ff;
+        //uint oi2p = (oiPrev & 0xff0000) | 0xff00ffff;
+        //uint oi3p = (oiPrev & 0xff000000) | 0x00ffffff;
+
+        //oi0 = oi0p != 0xffffffff ? oi0p : oi0;
+        //oi1 = oi1p != 0xffffffff ? oi1p : oi1;
+        //oi2 = oi2p != 0xffffffff ? oi2p : oi2;
+        //oi3 = oi3p != 0xffffffff ? oi3p : oi3;
+
+		_objIndexBuf[(id.x + id.y * _objIndexImgWidth) >> 2] = oi0 & oi1 & oi2 & oi3;
+	}
+}
+

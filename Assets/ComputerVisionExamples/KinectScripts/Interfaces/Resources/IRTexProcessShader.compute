@@ -1,0 +1,33 @@
+#pragma kernel IrBufFindMM
+
+
+RWStructuredBuffer<uint> _IrBufRaw;
+RWStructuredBuffer<float> _IrBufMM;
+
+uint _IrBufLen;
+
+
+[numthreads(1, 1, 1)]
+void IrBufFindMM(uint3 id : SV_DispatchThreadID)
+{
+	uint ir2 =  _IrBufRaw[0];
+    float minValue = (float)(ir2 & 0xffff);
+    float maxValue = (float)(ir2 & 0xffff);
+
+    for (uint i = 0; i < _IrBufLen; i++) 
+	{
+		ir2 =  _IrBufRaw[i];
+
+        float v0 = (float)(ir2 & 0xffff);
+        minValue = min(minValue, v0);
+        maxValue = max(maxValue, v0);
+
+        float v1 = (float)(ir2 >> 16);
+        minValue = min(minValue, v1);
+        maxValue = max(maxValue, v1);
+    }
+
+    _IrBufMM[0] = minValue;
+    _IrBufMM[1] = maxValue;
+}
+

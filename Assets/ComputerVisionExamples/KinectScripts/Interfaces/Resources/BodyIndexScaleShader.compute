@@ -1,0 +1,77 @@
+#pragma kernel ScaleBodyIndexImage
+
+StructuredBuffer<uint> _BodyIndexBuf;
+RWStructuredBuffer<uint> _TargetBuf;
+
+int _BodyIndexImgWidth;
+int _BodyIndexImgHeight;
+int _TargetImgWidth;
+int _TargetImgHeight;
+
+
+// returns averaged source value (deoth)
+int GetSourceValue(int sx, int sy)
+{
+	uint sCnt = 0, sBI = -1;
+
+	[unroll]
+	for(int dx = -1; dx <= 1; dx++)
+	{
+		[unroll]
+		for(int dy = -1; dy <= 1; dy++)
+		{
+			int dsx = sx + dx; int dsy = sy + dy;
+			if(dsx >= 0 && dsx < _BodyIndexImgWidth && dsy >= 0 && dsy < _BodyIndexImgHeight)
+			{
+				int dsi = (dsx >> 2) + dsy * (_BodyIndexImgWidth >> 2); int dsii = dsx & 3;
+			
+				uint bi0 = _BodyIndexBuf[dsi];
+				bi0 = ((dsii == 3) * (bi0 >> 24)) | ((dsii == 2) * (bi0 >> 16) & 0xFF) | ((dsii == 1) * (bi0 >> 8) & 0xFF) | ((dsii == 0) * (bi0 & 0xFF));
+
+				if(bi0 != 255 && (sBI == -1 || sBI == bi0))
+				{
+					sBI = bi0; sCnt++;
+                }
+            }
+        }
+    }
+
+	return sCnt >= 5 ? sBI : 255;  // sCnt > 0 ? sVal / sCnt : 255;  // 
+}
+
+
+[numthreads(8, 8, 1)]
+void ScaleBodyIndexImage(uint3 id : SV_DispatchThreadID)
+{
+	if ((id.x & 3) == 0)
+	{
+		int sx0 = (int)((float)id.x / _TargetImgWidth * _BodyIndexImgWidth);
+		int sx1 = (int)((float)(id.x + 1) / _TargetImgWidth * _BodyIndexImgWidth);
+		int sx2 = (int)((float)(id.x + 2) / _TargetImgWidth * _BodyIndexImgWidth);
+		int sx3 = (int)((float)(id.x + 3) / _TargetImgWidth * _BodyIndexImgWidth);
+		int sy = (int)((float)id.y / _TargetImgHeight * _BodyIndexImgHeight);
+
+		//int siy = sy * (_BodyIndexImgWidth >> 2);
+		//int si0 = siy + (sx0 >> 2); int si0i = sx0 & 3;
+		//int si1 = siy + (sx1 >> 2); int si1i = sx1 & 3;
+		//int si2 = siy + (sx2 >> 2); int si2i = sx2 & 3;
+		//int si3 = siy + (sx3 >> 2); int si3i = sx3 & 3;
+
+		//uint bi0 = _BodyIndexBuf[si0];
+		//bi0 = ((si0i == 3) * (bi0 >> 24)) | ((si0i == 2) * (bi0 >> 16) & 0xFF) | ((si0i == 1) * (bi0 >> 8) & 0xFF) | ((si0i == 0) * (bi0 & 0xFF));
+		//uint bi1 = _BodyIndexBuf[si1];
+		//bi1 = ((si1i == 3) * (bi1 >> 24)) | ((si1i == 2) * (bi1 >> 16) & 0xFF) | ((si1i == 1) * (bi1 >> 8) & 0xFF) | ((si1i == 0) * (bi1 & 0xFF));
+		//uint bi2 = _BodyIndexBuf[si2];
+		//bi2 = ((si2i == 3) * (bi2 >> 24)) | ((si2i == 2) * (bi2 >> 16) & 0xFF) | ((si2i == 1) * (bi2 >> 8) & 0xFF) | ((si2i == 0) * (bi2 & 0xFF));
+		//uint bi3 = _BodyIndexBuf[si3];
+		//bi3 = ((si3i == 3) * (bi3 >> 24)) | ((si3i == 2) * (bi3 >> 16) & 0xFF) | ((si3i == 1) * (bi3 >> 8) & 0xFF) | ((si3i == 0) * (bi3 & 0xFF));
+
+		uint bi0 = GetSourceValue(sx0, sy);
+		uint bi1 = GetSourceValue(sx1, sy);
+		uint bi2 = GetSourceValue(sx2, sy);
+		uint bi3 = GetSourceValue(sx3, sy);
+
+		uint di = (id.x >> 2) + id.y * (_TargetImgWidth >> 2);
+		_TargetBuf[di] = (bi0 | (bi1 << 8) | (bi2 << 16) | (bi3 << 24));
+	}
+}

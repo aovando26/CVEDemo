@@ -1,0 +1,62 @@
+#pragma kernel ScaleDepthImage
+
+StructuredBuffer<uint> _DepthBuf;
+RWStructuredBuffer<uint> _TargetBuf;
+
+int _DepthImgWidth;
+int _DepthImgHeight;
+int _TargetImgWidth;
+int _TargetImgHeight;
+
+
+// returns averaged source value (depth)
+int GetSourceValue(int sx, int sy)
+{
+	uint sVal = 0, sCnt = 0;
+
+	[unroll]
+	for(int dx = -1; dx <= 1; dx++)
+	{
+		[unroll]
+		for(int dy = -1; dy <= 1; dy++)
+		{
+			int dsx = sx + dx; int dsy = sy + dy;
+			if(dsx >= 0 && dsx < _DepthImgWidth && dsy >= 0 && dsy < _DepthImgHeight)
+			{
+				int dsi = (dsx >> 1) + dsy * (_DepthImgWidth >> 1); int dsii = dsx & 1;
+			
+				uint d0 = _DepthBuf[dsi];
+				d0 = ((dsii == 1) * (d0 >> 16)) | ((dsii == 0) * (d0 & 0xFFFF));
+				sVal += d0; sCnt++;
+            }
+        }
+    }
+
+	return sVal / sCnt;
+}
+
+
+[numthreads(8, 8, 1)]
+void ScaleDepthImage(uint3 id : SV_DispatchThreadID)
+{
+	if ((id.x & 1) == 0)
+	{
+		int sx0 = (int)((float)id.x / _TargetImgWidth * _DepthImgWidth);
+		int sx1 = (int)((float)(id.x + 1) / _TargetImgWidth * _DepthImgWidth);
+		int sy = (int)((float)id.y / _TargetImgHeight * _DepthImgHeight);
+
+		//int si0 = (sx0 >> 1) + sy * (_DepthImgWidth >> 1); int si0i = sx0 & 1;
+		//int si1 = (sx1 >> 1) + sy * (_DepthImgWidth >> 1); int si1i = sx1 & 1;
+
+		//uint d0 = _DepthBuf[si0];
+		//d0 = ((si0i == 1) * (d0 >> 16)) | ((si0i == 0) * (d0 & 0xFFFF));
+		//uint d1 = _DepthBuf[si1];
+		//d1 = ((si1i == 1) * (d1 >> 16)) | ((si1i == 0) * (d1 & 0xFFFF));
+
+		uint d0 = GetSourceValue(sx0, sy);
+		uint d1 = GetSourceValue(sx1, sy);
+
+		int di = (id.x >> 1) + id.y * (_TargetImgWidth >> 1);
+		_TargetBuf[di] = (d0 | (d1 << 16));
+	}
+}
