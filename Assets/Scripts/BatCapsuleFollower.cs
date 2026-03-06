@@ -1,11 +1,12 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class BatCapsuleFollower : MonoBehaviour
 {
-    private Rigidbody _rigidbody;
     [SerializeField] private float _sensitivity = 50f;
+
+    private Rigidbody _rigidbody;
     private BatCapsule _batFollower;
-    private Vector3 _velocity; // Missing field declaration
 
     private void Awake()
     {
@@ -14,19 +15,24 @@ public class BatCapsuleFollower : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Add null check to prevent errors if target isn't set
         if (_batFollower == null) return;
 
-        Vector3 destination = _batFollower.transform.position;
-        _rigidbody.transform.rotation = transform.rotation;
+        Transform target = _batFollower.transform;
 
-        _velocity = (destination - _rigidbody.transform.position) * _sensitivity;
+        // Drive position via velocity so the physics engine sees a proper swing speed.
+        Vector3 destination = target.position;
+        _rigidbody.linearVelocity = (destination - _rigidbody.position) * _sensitivity;
 
-        _rigidbody.linearVelocity = _velocity;
+        // Sync rotation to match the bat target each physics step.
+        _rigidbody.MoveRotation(target.rotation);
     }
 
+    /// <summary>
+    /// Assigns the BatCapsule this follower should track.
+    /// </summary>
     public void SetFollowTarget(BatCapsule batFollower)
     {
         _batFollower = batFollower;
     }
 }
+

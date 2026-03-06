@@ -1,65 +1,59 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class BallSpawnPosition : MonoBehaviour
 {
-    [SerializeField] private float respawnDelay = 3f; // Time before ball respawns after being hit
-    
-    private Vector3 spawnPosition;
-    private Quaternion spawnRotation;
-    private Rigidbody ballRb;
-    private float timeSinceHit = float.MaxValue;
-    private bool ballWasHit = false;
+    [SerializeField] private float respawnDelay = 3f;
+
+    private Vector3 _spawnPosition;
+    private Quaternion _spawnRotation;
+    private Rigidbody _ballRb;
+    private BallBehavior _ballBehavior;
+    private float _timeSinceHit;
+    private bool _ballWasHit;
 
     private void Start()
     {
-        // Store the initial spawn position and rotation
-        spawnPosition = transform.position;
-        spawnRotation = transform.rotation;
-        ballRb = GetComponent<Rigidbody>();
+        _spawnPosition = transform.position;
+        _spawnRotation = transform.rotation;
+        _ballRb = GetComponent<Rigidbody>();
+        _ballBehavior = GetComponent<BallBehavior>();
     }
 
     private void Update()
     {
-        // Check if enough time has passed to respawn
-        if (ballWasHit)
-        {
-            timeSinceHit += Time.deltaTime;
-            if (timeSinceHit >= respawnDelay)
-            {
-                RespawnBall();
-            }
-        }
+        if (!_ballWasHit) return;
+
+        _timeSinceHit += Time.deltaTime;
+        if (_timeSinceHit >= respawnDelay)
+            RespawnBall();
     }
 
     /// <summary>
-    /// Called by BatBehavior when the ball is hit
+    /// Called by BatBehavior when the ball is successfully hit.
     /// </summary>
     public void OnBallHit()
     {
-        ballWasHit = true;
-        timeSinceHit = 0f;
+        _ballWasHit = true;
+        _timeSinceHit = 0f;
     }
 
     /// <summary>
-    /// Resets the ball to its spawn position with zero velocity
+    /// Returns the ball to its spawn position and resets all physics and game state.
     /// </summary>
     public void RespawnBall()
     {
-        // Reset position and rotation
-        transform.position = spawnPosition;
-        transform.rotation = spawnRotation;
-        
-        // Reset velocity and angular velocity
-        if (ballRb != null)
-        {
-            ballRb.linearVelocity = Vector3.zero;
-            ballRb.angularVelocity = Vector3.zero;
-        }
-        
-        // Reset hit tracking
-        ballWasHit = false;
-        timeSinceHit = float.MaxValue;
-        
-        Debug.Log("Ball respawned at original position");
+        transform.position = _spawnPosition;
+        transform.rotation = _spawnRotation;
+
+        // ResetBall handles Rigidbody state (isKinematic, useGravity, velocity).
+        if (_ballBehavior != null)
+            _ballBehavior.ResetBall();
+
+        _ballWasHit = false;
+        _timeSinceHit = 0f;
+
+        Debug.Log("[BallSpawnPosition] Ball respawned.");
     }
 }
+
