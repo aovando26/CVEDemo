@@ -37,6 +37,11 @@ public class BatHitForce : MonoBehaviour
             ballRb.AddForce(hitDirection.normalized * hitForce, ForceMode.Impulse);
         }
 
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.AddScore(10); // Change '10' to whatever point value you want!
+        }
+
         // 4. Start the respawn timer
         if (spawner != null)
         {

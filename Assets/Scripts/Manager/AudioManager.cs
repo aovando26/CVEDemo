@@ -39,7 +39,7 @@ public class AudioManager : MonoBehaviour
 
     // scene names
     private string starterScene = "Starter";
-    private string mainScene = "Main";
+    private string mainScene = "GameScene";
 
 
     void Awake()
