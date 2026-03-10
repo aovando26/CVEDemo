@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 333e9fb4028e99340bc9101ac46cfa4d
+ComputeShaderImporter:
+  externalObjects: {}
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Resources/PoseLmCompute.compute
+  uploadId: 868816

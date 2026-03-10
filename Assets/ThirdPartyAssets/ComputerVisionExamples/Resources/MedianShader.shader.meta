@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ffb111704c8d0ae49b97d60e5419fe35
+timeCreated: 1495833444
+licenseType: Store
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/MedianShader.shader
+  uploadId: 868816

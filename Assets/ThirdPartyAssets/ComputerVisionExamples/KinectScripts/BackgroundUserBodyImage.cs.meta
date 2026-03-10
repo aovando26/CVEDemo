@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: df3491a43e1ff0f4d84b03fdfd277aad
+timeCreated: 1483707326
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/BackgroundUserBodyImage.cs
+  uploadId: 868816

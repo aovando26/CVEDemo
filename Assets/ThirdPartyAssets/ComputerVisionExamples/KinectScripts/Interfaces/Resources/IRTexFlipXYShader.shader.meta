@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: dbf468c96b3e1724d84b31fcb5d505d7
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Resources/IRTexFlipXYShader.shader
+  uploadId: 868816

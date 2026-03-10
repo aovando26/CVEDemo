@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 9a17e9eb7ba629243bfc955c820d04a1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/FollowSensorTransform.cs
+  uploadId: 868816

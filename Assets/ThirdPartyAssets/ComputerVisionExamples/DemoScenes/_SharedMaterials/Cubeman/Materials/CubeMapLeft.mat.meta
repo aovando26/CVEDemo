@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: bc548844136821b42874fc39b2d7655b
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/_SharedMaterials/Cubeman/Materials/CubeMapLeft.mat
+  uploadId: 868816

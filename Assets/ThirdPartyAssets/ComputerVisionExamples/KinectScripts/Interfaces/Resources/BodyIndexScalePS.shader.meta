@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 53afcfa9cef954060901da6fa6cc58af
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Resources/BodyIndexScalePS.shader
+  uploadId: 868816

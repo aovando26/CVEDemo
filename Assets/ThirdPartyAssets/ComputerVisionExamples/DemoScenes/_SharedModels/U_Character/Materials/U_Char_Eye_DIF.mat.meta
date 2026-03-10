@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 13d3939f36835444fb0366a8a681b56e
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/_SharedModels/U_Character/Materials/U_Char_Eye_DIF.mat
+  uploadId: 868816

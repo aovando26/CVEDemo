@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a2e8fab680d4a61438fbde3c3a19f8c5
+timeCreated: 1425908968
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/OverlayDemo/Materials/GreenCube.prefab
+  uploadId: 868816

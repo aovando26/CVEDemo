@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 05a435b443ef84c4d95ee4ffdec4138f
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Trackers/STrack.cs
+  uploadId: 868816

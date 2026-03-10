@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d4bdc33d85a08f240810807846c06950
+timeCreated: 1457363299
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/ColliderDemo/Materials/JointMatT.mat
+  uploadId: 868816

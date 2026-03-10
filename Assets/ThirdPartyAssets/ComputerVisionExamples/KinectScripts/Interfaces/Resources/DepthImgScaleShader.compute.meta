@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 7f956620657ef194892e81c6bb905d88
+ComputeShaderImporter:
+  externalObjects: {}
+  currentAPIMask: 4
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Resources/DepthImgScaleShader.compute
+  uploadId: 868816

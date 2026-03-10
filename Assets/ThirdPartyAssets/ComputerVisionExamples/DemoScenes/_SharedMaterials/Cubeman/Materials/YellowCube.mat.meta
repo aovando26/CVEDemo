@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 9a219312cdda5ff4bb2b5510d90c3b0d
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/_SharedMaterials/Cubeman/Materials/YellowCube.mat
+  uploadId: 868816

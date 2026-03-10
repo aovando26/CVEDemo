@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a5a41a6cd258a40ecbdc0a29db3aefb4
+ShaderIncludeImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Resources/CommonPS.cginc
+  uploadId: 868816

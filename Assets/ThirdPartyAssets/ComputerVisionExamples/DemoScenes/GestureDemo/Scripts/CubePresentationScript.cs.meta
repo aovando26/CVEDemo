@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6a9625ba6015282449cb8d2a9f59b945
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/GestureDemo/Scripts/CubePresentationScript.cs
+  uploadId: 868816

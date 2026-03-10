@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 3e2615421ff704d489cfebe9ca7c0763
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/OverlayDemo/Materials/GreenStick.prefab
+  uploadId: 868816

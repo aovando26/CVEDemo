@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: da367a0f43e141749968e4b22b23d5f9
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/FittingRoomDemo/Resources/Clothing/0000/Materials/skin.mat
+  uploadId: 868816

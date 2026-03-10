@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 16e88840f904a844f86ac66e52685adf
+timeCreated: 1483560520
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/ColliderDemo/Materials/BallPrefab2D.prefab
+  uploadId: 868816

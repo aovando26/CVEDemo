@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e2dc81f247837774e8c62fd06aab6fce
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/UniCamConfig.asset
+  uploadId: 868816

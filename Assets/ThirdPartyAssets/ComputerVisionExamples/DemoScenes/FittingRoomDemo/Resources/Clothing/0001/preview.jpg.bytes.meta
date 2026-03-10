@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4d4d2c224a82a854b9740e390332cc5b
+timeCreated: 1427060922
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/FittingRoomDemo/Resources/Clothing/0001/preview.jpg.bytes
+  uploadId: 868816

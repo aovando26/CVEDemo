@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: cb6e7806bdb5db24ebf8a2ffe5750e0a
+DefaultImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/MocapAnimatorDemo/MocapAnimatorDemo.unity
+  uploadId: 868816

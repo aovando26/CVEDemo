@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 588451d4696f4774ebdf90d17c60319b
+ComputeShaderImporter:
+  externalObjects: {}
+  currentAPIMask: 2097152
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/PointCloudVertexShaderCRK2.compute
+  uploadId: 868816

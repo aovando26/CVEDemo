@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1f08651bcc15fb046a1d481428ffac89
+timeCreated: 1471207641
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/OverlayDemo/PhotoBooth.unity
+  uploadId: 868816

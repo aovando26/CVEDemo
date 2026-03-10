@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 925aea4269e8c4366a0c0bcfbf7086fa
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Trackers/RectBox.cs
+  uploadId: 868816

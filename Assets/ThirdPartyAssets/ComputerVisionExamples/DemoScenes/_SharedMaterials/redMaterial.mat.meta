@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 1870c9863d6ae8e4bb2ab84bb5e2e110
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/_SharedMaterials/redMaterial.mat
+  uploadId: 868816

@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 85ff23489b1399e468f2c6fafe1e63ac
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/_SharedMaterials/Cubeman/SkeletonLine.prefab
+  uploadId: 868816

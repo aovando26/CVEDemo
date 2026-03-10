@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: e9da43cd9f881423a8b9e5126cd3061b
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Trackers/MatOps.cs
+  uploadId: 868816

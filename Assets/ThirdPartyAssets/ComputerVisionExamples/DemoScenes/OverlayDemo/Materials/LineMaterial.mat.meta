@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6902a4f5dc1f99842b0fe0a5a2eb8b1e
+timeCreated: 1439048068
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/OverlayDemo/Materials/LineMaterial.mat
+  uploadId: 868816

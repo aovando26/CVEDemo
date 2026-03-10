@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8a9577230f348405ea0f74217f80cb49
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/PointCloudDemo/HDRP/HDRP.asset
+  uploadId: 868816

@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: db0437ba8ecaf7a44833b56ad5858ecd
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/_SharedMaterials/Cubeman/DebugLine.prefab
+  uploadId: 868816

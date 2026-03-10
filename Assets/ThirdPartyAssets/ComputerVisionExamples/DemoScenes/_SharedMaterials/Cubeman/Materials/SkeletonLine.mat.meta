@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: c19ffeb0f090eac4bbcdf1ab23a9ff66
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/_SharedMaterials/Cubeman/Materials/SkeletonLine.mat
+  uploadId: 868816

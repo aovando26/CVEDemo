@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8cdc5e333ff3f5849bbc1b8109632f16
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/SceneMeshUShader.shader
+  uploadId: 868816

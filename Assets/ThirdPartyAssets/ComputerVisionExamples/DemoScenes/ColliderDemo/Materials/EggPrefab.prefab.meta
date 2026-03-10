@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 22e1778528985b342829dbd4f4252bfc
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/ColliderDemo/Materials/EggPrefab.prefab
+  uploadId: 868816

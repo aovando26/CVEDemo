@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 13a4662d9a3b1e043b05ac45dad8ec5d
+ComputeShaderImporter:
+  externalObjects: {}
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Resources/TexToTensorShader.compute
+  uploadId: 868816

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: fa897a3a65d889c49b8a36408a789f30
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/KinectUserBodyMerger-Attribution.txt
+  uploadId: 868816

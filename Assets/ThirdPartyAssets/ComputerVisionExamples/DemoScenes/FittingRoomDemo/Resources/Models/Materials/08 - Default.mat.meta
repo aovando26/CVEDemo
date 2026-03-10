@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 99ca01bdd92b0d440817efec0b3acc31
+timeCreated: 1437061326
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/FittingRoomDemo/Resources/Models/Materials/08
+    - Default.mat
+  uploadId: 868816

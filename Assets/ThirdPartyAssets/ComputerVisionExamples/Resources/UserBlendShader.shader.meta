@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 492579dd15c959649a26f6e772db6aff
+timeCreated: 1460648058
+licenseType: Store
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/UserBlendShader.shader
+  uploadId: 868816

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: b014c649c07962945a25fffdfbf455d3
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/AvatarDemo/AvatarDemo2.unity
+  uploadId: 868816

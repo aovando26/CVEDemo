@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 8b6188be9605e4bb28188971f2cb360e
+timeCreated: 1483707326
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/BackgroundObjectImage.cs
+  uploadId: 868816

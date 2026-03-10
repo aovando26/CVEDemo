@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9f2b9e1ab120cbb4abb345fbec4f65f3
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/UserSkeletonCollider.cs
+  uploadId: 868816

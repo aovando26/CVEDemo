@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 030bb1853bbe247a0a9b5f0a8da7e77c
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Resources/PoseLmBodyIndexPS.shader
+  uploadId: 868816

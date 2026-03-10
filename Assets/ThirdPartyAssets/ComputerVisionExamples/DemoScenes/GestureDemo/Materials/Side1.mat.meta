@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 5c6a1347f8706d9428cd9c4b8d29f4b5
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/GestureDemo/Materials/Side1.mat
+  uploadId: 868816

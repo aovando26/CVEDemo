@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 3884d4333ea35f445915ed7dd5bc79ce
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/ForegroundBlendShader.shader
+  uploadId: 868816

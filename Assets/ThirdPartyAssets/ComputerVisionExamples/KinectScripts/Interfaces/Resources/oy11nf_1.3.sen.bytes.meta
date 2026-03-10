@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a92a95f39b2474075a766e23e07add1f
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Resources/oy11nf_1.3.sen.bytes
+  uploadId: 868816

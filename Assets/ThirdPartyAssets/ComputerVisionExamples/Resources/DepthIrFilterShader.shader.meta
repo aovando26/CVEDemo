@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 227b4806b7fe0c648aae429abd234194
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/DepthIrFilterShader.shader
+  uploadId: 868816

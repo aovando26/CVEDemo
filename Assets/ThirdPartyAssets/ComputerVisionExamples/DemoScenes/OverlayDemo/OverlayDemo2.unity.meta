@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 57e62c8ec79dddf4389faebcf3928a11
+DefaultImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/OverlayDemo/OverlayDemo2.unity
+  uploadId: 868816

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 87c6206b6115243e582944a1f8ce3116
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/ObjectDemo/ObjectDemo1.unity
+  uploadId: 868816

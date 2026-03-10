@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 6cee204d584c24b7580f396156fe58fb
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Trackers/LAPJV.cs
+  uploadId: 868816

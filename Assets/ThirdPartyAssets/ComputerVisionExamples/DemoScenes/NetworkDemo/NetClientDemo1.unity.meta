@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: e1677401a36560c4b91b919a37132b2f
+DefaultImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/NetworkDemo/NetClientDemo1.unity
+  uploadId: 868816

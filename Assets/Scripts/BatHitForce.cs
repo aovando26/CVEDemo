@@ -1,3 +1,4 @@
+using DamageNumbersPro;
 using UnityEngine;
 
 public class BatHitForce : MonoBehaviour
@@ -13,6 +14,9 @@ public class BatHitForce : MonoBehaviour
     [SerializeField] private float hitCooldown = 0.5f;
 
     private float _lastHitTime = float.NegativeInfinity;
+
+    [SerializeField] private Vector3 damageTextOffset = new Vector3(0.7646f, 1.5f, 1.59919f);  // Position from Inspector
+    public DamageNumber hitDamage;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -46,6 +50,9 @@ public class BatHitForce : MonoBehaviour
         {
             // Spawn at the ball's current position
             ParticleSystem effect = Instantiate(hitParticlePrefab, other.transform.position, Quaternion.identity);
+
+            DamageNumber hitDamageText = hitDamage.Spawn(transform.position); // Slightly above the ball
+                                                                            // 
             Destroy(effect.gameObject, 2f); // Clean up after 2 seconds
         }
 

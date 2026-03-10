@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: d873381e147eeb9469f0be0f5c4fcd57
+DefaultImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/BackgroundRemovalDemo/BackgroundRemovalDemo2.unity
+  uploadId: 868816

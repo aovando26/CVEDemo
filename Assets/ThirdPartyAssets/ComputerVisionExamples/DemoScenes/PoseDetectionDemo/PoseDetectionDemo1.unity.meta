@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7ab1548f4562a634ca0fb553f7931360
+timeCreated: 1455285758
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/PoseDetectionDemo/PoseDetectionDemo1.unity
+  uploadId: 868816

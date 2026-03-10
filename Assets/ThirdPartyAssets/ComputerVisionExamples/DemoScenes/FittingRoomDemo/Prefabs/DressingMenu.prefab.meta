@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b84df344532675640b2cd8897e0545ad
+timeCreated: 1480112007
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/FittingRoomDemo/Prefabs/DressingMenu.prefab
+  uploadId: 868816

@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: b2efde7dbfef647a7ad6e7b057738c70
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/PointCloudDemo/Scripts/CameraLeftRightMover.cs
+  uploadId: 868816

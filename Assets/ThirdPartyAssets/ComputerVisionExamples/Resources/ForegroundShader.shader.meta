@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: eaceef7b0a7e69947be1991717442c1c
+timeCreated: 1498321181
+licenseType: Store
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/ForegroundShader.shader
+  uploadId: 868816

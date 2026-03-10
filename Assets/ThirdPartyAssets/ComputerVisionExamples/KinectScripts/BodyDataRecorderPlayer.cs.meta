@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: d8a2276ae0c75c9439e36365c3e7554d
+timeCreated: 1438963698
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/BodyDataRecorderPlayer.cs
+  uploadId: 868816

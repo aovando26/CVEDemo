@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: da621473b8303554c9280ca5e9b7aa2a
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/_Readme/WhatsNew-Computer-Vision-Examples-Lite.pdf
+  uploadId: 868816

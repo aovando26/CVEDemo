@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 01fbbccae4fdf403db843d1e10341a37
+ShaderIncludeImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Resources/PoseStruct.cginc
+  uploadId: 868816

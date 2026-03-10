@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: eda8e5e0fceb9423caea338275c5757c
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/DefSensorInterface.json.txt
+  uploadId: 868816

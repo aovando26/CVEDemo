@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 9c2df990b46524a48b578cdacf9d4bbb
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/ComputerVisionExamples.asmdef
+  uploadId: 868816

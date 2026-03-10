@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9d3f11ce11df18345a5ff3ad1fdcb56b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/MocapAnimatorDemo/Animations/RobotAnimated.controller
+  uploadId: 868816

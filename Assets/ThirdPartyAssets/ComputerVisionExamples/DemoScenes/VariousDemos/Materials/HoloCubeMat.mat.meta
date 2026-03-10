@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 10b4845b347b9ed45985c496f574494d
+timeCreated: 1463347970
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/VariousDemos/Materials/HoloCubeMat.mat
+  uploadId: 868816

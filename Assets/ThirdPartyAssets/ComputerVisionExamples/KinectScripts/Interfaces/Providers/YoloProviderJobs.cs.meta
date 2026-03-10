@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 31a8447329a274008876b9ec840be28a
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Providers/YoloProviderJobs.cs
+  uploadId: 868816

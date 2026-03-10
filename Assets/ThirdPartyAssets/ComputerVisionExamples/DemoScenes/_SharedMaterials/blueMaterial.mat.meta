@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 0b3e4f6fde8abb14b9f084a4830a910c
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/_SharedMaterials/blueMaterial.mat
+  uploadId: 868816

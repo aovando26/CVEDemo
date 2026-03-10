@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: b31fab01b8d06447bb95606db50b164a
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Providers/SentisStats.cs
+  uploadId: 868816

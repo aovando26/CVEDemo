@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5afefc5b5a149490a9425db55a8bd561
+ComputeShaderImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Resources/Filters.cginc
+  uploadId: 868816

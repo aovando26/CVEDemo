@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 26e9d1e02bce91143b5158d5de60da95
+timeCreated: 1429710051
+licenseType: Store
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/InvertShader.shader
+  uploadId: 868816

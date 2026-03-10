@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a2d74b5f03f83994dad0e61bf4d9c060
+ComputeShaderImporter:
+  externalObjects: {}
+  currentAPIMask: 2097152
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/ForegroundFiltBodyIndexShader.compute
+  uploadId: 868816

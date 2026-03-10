@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 7a63911a31e9441fc922911dbf469623
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/ObjectDemo/Prefabs/ObjSphere.prefab
+  uploadId: 868816

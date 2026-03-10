@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 4ce10cb113a024ca08f3e209e3ada26b
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Resources/bdet_1.2.sen.bytes
+  uploadId: 868816

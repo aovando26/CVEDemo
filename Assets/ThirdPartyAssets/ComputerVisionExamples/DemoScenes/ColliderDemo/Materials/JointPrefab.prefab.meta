@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 037f26cc9d0926549a1d82e820c9e350
+timeCreated: 1457363299
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/ColliderDemo/Materials/JointPrefab.prefab
+  uploadId: 868816

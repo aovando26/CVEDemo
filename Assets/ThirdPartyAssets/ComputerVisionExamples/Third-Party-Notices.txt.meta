@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: fe346cd965fd4ad41a8183dfc25a82f5
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Third-Party-Notices.txt
+  uploadId: 868816

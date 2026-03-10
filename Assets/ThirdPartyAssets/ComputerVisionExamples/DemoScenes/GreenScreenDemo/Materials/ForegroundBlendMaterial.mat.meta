@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 49fbbf328ed997b4dafa6a57090f45bb
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/GreenScreenDemo/Materials/ForegroundBlendMaterial.mat
+  uploadId: 868816

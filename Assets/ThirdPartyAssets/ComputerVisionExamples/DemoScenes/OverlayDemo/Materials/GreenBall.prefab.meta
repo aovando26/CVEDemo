@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: c17b901a469cc934f88f499251bed1bc
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/OverlayDemo/Materials/GreenBall.prefab
+  uploadId: 868816

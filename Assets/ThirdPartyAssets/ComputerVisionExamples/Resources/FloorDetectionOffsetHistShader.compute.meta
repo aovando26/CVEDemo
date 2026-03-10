@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 458c818a324b4594ba25e5fdf9c53fc3
+ComputeShaderImporter:
+  externalObjects: {}
+  currentAPIMask: 2097152
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/FloorDetectionOffsetHistShader.compute
+  uploadId: 868816

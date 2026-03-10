@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 8c48390e28735473fb47b78371a8e5f8
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Resources/dan_1.1.sen.bytes
+  uploadId: 868816

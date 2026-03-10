@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5e9f29dc01a48bcb59ee66eaddc9d7d2
+ComputeShaderImporter:
+  externalObjects: {}
+  currentAPIMask: 2097152
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/Resources/PointCloudVertexShaderAll.compute
+  uploadId: 868816

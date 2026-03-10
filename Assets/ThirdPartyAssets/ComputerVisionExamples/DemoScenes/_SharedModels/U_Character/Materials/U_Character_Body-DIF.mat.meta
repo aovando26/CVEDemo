@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 805c4d7a00aefd043bd7c9990c564787
+NativeFormatImporter:
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/DemoScenes/_SharedModels/U_Character/Materials/U_Character_Body-DIF.mat
+  uploadId: 868816

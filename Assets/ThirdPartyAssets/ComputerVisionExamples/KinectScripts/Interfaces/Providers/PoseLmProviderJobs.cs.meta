@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 7225742d1288b48a39c97ca96253cd15
+AssetOrigin:
+  serializedVersion: 1
+  productId: 174050
+  packageName: Computer Vision Examples for Unity
+  packageVersion: 1.7.1
+  assetPath: Assets/ThirdPartyAssets/ComputerVisionExamples/KinectScripts/Interfaces/Providers/PoseLmProviderJobs.cs
+  uploadId: 868816
