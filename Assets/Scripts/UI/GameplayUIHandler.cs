@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class GameplayUIHandler : MonoBehaviour
 {
     public TextMeshProUGUI timerText;
-    public Slider timerSlider;
+    public Image timerImage;
     public TextMeshProUGUI scoreText;
 
     void Update()
@@ -26,9 +26,10 @@ public class GameplayUIHandler : MonoBehaviour
             }
 
             // Update Timer Slider (Calculates a value between 0 and 1)
-            if (timerSlider != null)
+            if (timerImage != null)
             {
-                timerSlider.value = GameManager.Instance.CurrentTime / GameManager.Instance.MaxTime;
+                // Changed from 'timerSlider.value' to 'timerImage.fillAmount'
+                timerImage.fillAmount = GameManager.Instance.CurrentTime / GameManager.Instance.MaxTime;
             }
         }
     }
