@@ -34,7 +34,9 @@ public class AudioManager : MonoBehaviour
 
     // Audio clips for different scenarios
     private string starterSound = "starter_scene";
-    private string mainSound = "baseball";
+    private string dialogueIntro = "dialogue_intro";
+
+    private string mainSound = "crowd-cheering";
     //private string dialogueOne = "dialogue_one";
 
     // scene names
@@ -79,16 +81,17 @@ public class AudioManager : MonoBehaviour
         else if (scene.name == mainScene)
         {
             AudioManager.Instance.StopAll();
+            AudioManager.Instance.Play(dialogueIntro);
             AudioManager.Instance.Play(mainSound); // Play sound for main game scene
             // StartCoroutine(PlayDialogueAfterDelay(dialogueOne, 2f));
         }
     }
-    private IEnumerator PlayDialogueAfterDelay(string soundName, float delaySeconds)
-    {
-        yield return new WaitForSeconds(delaySeconds);
-        AudioManager.Instance.Play(soundName);
-        Debug.Log($"Playing {soundName} after {delaySeconds} second delay");
-    }
+    //private IEnumerator PlayDialogueAfterDelay(string soundName, float delaySeconds)
+    //{
+    //    yield return new WaitForSeconds(delaySeconds);
+    //    AudioManager.Instance.Play(soundName);
+    //    Debug.Log($"Playing {soundName} after {delaySeconds} second delay");
+    //}
 
     private void OnDestroy()
     {
