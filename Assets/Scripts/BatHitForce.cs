@@ -15,53 +15,33 @@ public class BatHitForce : MonoBehaviour
 
     private float _lastHitTime = float.NegativeInfinity;
 
-    [SerializeField] private Vector3 damageTextOffset = new Vector3(0.7646f, 1.5f, 1.59919f);  // Position from Inspector
+    [SerializeField] private Vector3 damageTextOffset = new Vector3(0.7646f, 1.5f, 1.59919f);
     public DamageNumber hitDamage;
 
     private void OnTriggerEnter(Collider other)
     {
-        // 1. Cooldown & Null Check
         if (Time.time - _lastHitTime < hitCooldown) return;
 
         BallBehavior ball = other.GetComponent<BallBehavior>();
-        if (ball == null || ball.IsHit) return;
 
-        // 2. Get the other components
         Rigidbody ballRb = other.GetComponent<Rigidbody>();
         BallSpawnPosition spawner = other.GetComponent<BallSpawnPosition>();
 
-        // 3. Logic: Wake up the ball and push it
         ball.OnHit();
-        if (ballRb != null)
-        {
-            ballRb.AddForce(hitDirection.normalized * hitForce, ForceMode.Impulse);
-        }
 
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.AddScore(10); // Change '10' to whatever point value you want!
-        }
+        ballRb.AddForce(hitDirection.normalized * hitForce, ForceMode.Impulse);
 
-        // 4. Start the respawn timer
-        if (spawner != null)
-        {
-            spawner.OnBallHit();
-        }
+        GameManager.Instance.AddScore(10);
 
-        // 5. Sound & Particles
+        spawner.OnBallHit();
+
         AudioManager.Instance?.Play("ball_hit");
 
-        if (hitParticlePrefab != null)
-        {
-            // Spawn at the ball's current position
-            ParticleSystem effect = Instantiate(hitParticlePrefab, other.transform.position, Quaternion.identity);
+        ParticleSystem effect = Instantiate(hitParticlePrefab, other.transform.position, Quaternion.identity);
 
-            DamageNumber hitDamageText = hitDamage.Spawn(transform.position); // Slightly above the ball
-                                                                            // 
-            Destroy(effect.gameObject, 2f); // Clean up after 2 seconds
-        }
+        DamageNumber hitDamageText = hitDamage.Spawn(transform.position);
+        Destroy(effect.gameObject, 2f); 
 
         _lastHitTime = Time.time;
-        Debug.Log("[Bat] Trigger Hit Success!");
     }
 }
