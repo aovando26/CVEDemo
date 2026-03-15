@@ -46,7 +46,7 @@ public class SceneTransition : MonoBehaviour
             return;
         }
 
-        if (gestureListener.IsSwipeLeft())
+        if (gestureListener.IsSwipeUp())
         {
             LoadNextScene();
         }
