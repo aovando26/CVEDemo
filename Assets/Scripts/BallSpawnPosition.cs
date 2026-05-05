@@ -8,7 +8,7 @@ public class BallSpawnPosition : MonoBehaviour
     private Vector3 _spawnPosition;
     private Quaternion _spawnRotation;
     private Rigidbody _ballRb;
-    private BallBehavior _ballBehavior;
+    //private BallBehavior _ballBehavior;
     private float _timeSinceHit;
     private bool _ballWasHit;
 
@@ -17,7 +17,7 @@ public class BallSpawnPosition : MonoBehaviour
         _spawnPosition = transform.position;
         _spawnRotation = transform.rotation;
         _ballRb = GetComponent<Rigidbody>();
-        _ballBehavior = GetComponent<BallBehavior>();
+        //_ballBehavior = GetComponent<BallBehavior>();
     }
 
     private void Update()
@@ -47,8 +47,8 @@ public class BallSpawnPosition : MonoBehaviour
         transform.rotation = _spawnRotation;
 
         // ResetBall handles Rigidbody state (isKinematic, useGravity, velocity).
-        if (_ballBehavior != null)
-            _ballBehavior.ResetBall();
+        //if (_ballBehavior != null)
+        //    _ballBehavior.ResetBall();
 
         _ballWasHit = false;
         _timeSinceHit = 0f;

@@ -33,10 +33,10 @@ public class BatBehavior : MonoBehaviour
     {
         if (!collision.gameObject.CompareTag("Ball")) return;
 
-        BallBehavior ballBehavior = collision.gameObject.GetComponent<BallBehavior>();
+        //BallBehavior ballBehavior = collision.gameObject.GetComponent<BallBehavior>();
         Rigidbody ballRb = collision.gameObject.GetComponent<Rigidbody>();
 
-        if (ballRb == null || ballBehavior == null || ballBehavior.IsHit) return;
+        //if (ballRb == null || ballBehavior == null || ballBehavior.IsHit) return;
 
         ContactPoint contact = collision.contacts[0];
         Vector3 contactPoint = contact.point;
@@ -68,7 +68,7 @@ public class BatBehavior : MonoBehaviour
         float finalForce = effectiveSpeed * powerMultiplier * forceScale;
 
         // 7. Activate ball physics, then apply impulse and backspin.
-        ballBehavior.OnHit();
+       // ballBehavior.OnHit();
         ballRb.AddForce(launchDirection * finalForce, ForceMode.Impulse);
 
         Vector3 spinAxis = Vector3.Cross(launchDirection, Vector3.up).normalized;
